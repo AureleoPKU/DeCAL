@@ -1,7 +1,6 @@
 <div align="center">
 
 <img src="assets/logo.png" alt="DeCAL logo" width="200">
-
 # DeCAL: Towards Physically-Grounded Dexterous Vision-Language-Action Models via Contact-Aware Latent Co-Imagination
 
 </div>
