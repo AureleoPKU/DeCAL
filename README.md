@@ -24,6 +24,7 @@
 ## 📑 Table of Contents
 - [Installation](#section-Installation)
 - [Policy Training](#section-PolicyTraining)
+- [Evaluation & Inference](#section-Evaluation)
 
 <span id="section-Installation"></span>
 ## 🛠️ Installation
@@ -154,14 +155,16 @@ Before running `launch/decal_finetune.sh`, configure the relevant environment va
 * CUDA / GPU-related environment variables
 * Paths to your local dataset and output directories
 
-### 4. Evaluation & Inference
-Offline Evaluation
+<span id="section-Evaluation"></span>
+## 🤖 Evaluation & Inference
+
+### 1. Offline Evaluation
 ```bash
 python tests/policies/decal/deploy_policy_tactile.py \
   --checkpoint /path/to/checkpoint
 ```
 
-Inference on Server
+### 2. Inference on Server
 ```bash
 python tests/policies/decal/deploy_policy_tac_server.py \
   --checkpoint /path/to/checkpoint
