@@ -1,33 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-###############################################################################
-################################# ENV config ##################################
-
-export HF_HOME="${HF_HOME:-${HOME}/.cache/huggingface}"
-export HF_LEROBOT_HOME="${HF_LEROBOT_HOME:-${HF_HOME}/lerobot}"
-
-CONDA_ENV="${CONDA_ENV:-decal}"
-
-if [[ "${CONDA_DEFAULT_ENV:-}" != "${CONDA_ENV}" ]]; then
-    if [[ -n "${CONDA_ROOT:-}" ]]; then
-        source "${CONDA_ROOT}/etc/profile.d/conda.sh"
-    elif command -v conda >/dev/null 2>&1; then
-        source "$(conda info --base)/etc/profile.d/conda.sh"
-    else
-        echo "Conda is unavailable. Activate ${CONDA_ENV} or set CONDA_ROOT." >&2
-        exit 1
-    fi
-    conda activate "${CONDA_ENV}"
-fi
-
-###############################################################################
 
 export MASTER_ADDR=${MASTER_ADDR:-"172.26.10.76"}
 export MASTER_PORT=${MASTER_PORT:-6379}
 echo "MASTER_ADDR=${MASTER_ADDR}, MASTER_PORT=${MASTER_PORT}"
 
-PROC_PER_NODE="${PROC_PER_NODE:-8}"
+PROC_PER_NODE="${PROC_PER_NODE:-4}"
 NODE_COUNT="${NODE_COUNT:-1}"
 NODE_RANK="${NODE_RANK:-0}"
 NUM_PROCESSES=$((NODE_COUNT * PROC_PER_NODE))

@@ -1,25 +1,50 @@
 import os
-# Keep your existing setting if you want online access
-os.environ["HF_HUB_OFFLINE"] = "0"
+from dataclasses import dataclass
+from pathlib import Path
+
+import draccus
+
+
+DEFAULT_HF_LEROBOT_HOME = Path(
+    os.environ.get("HF_LEROBOT_HOME", "/path/to/lerobot/datasets")
+)
+
+@dataclass
+class EvalConfig:
+    checkpoint: Path
+    hf_lerobot_home: Path = DEFAULT_HF_LEROBOT_HOME
+
+
+@draccus.wrap()
+def parse_args(cfg: EvalConfig) -> EvalConfig:
+    return cfg
+
+
+eval_cfg = parse_args()
+os.environ["HF_HUB_OFFLINE"] = "1"
+os.environ["HF_LEROBOT_HOME"] = str(eval_cfg.hf_lerobot_home.expanduser().resolve())
 
 print("HF_HOME =", os.environ.get("HF_HOME"))
+print("HF_LEROBOT_HOME =", os.environ["HF_LEROBOT_HOME"])
 
-from pathlib import Path
 import torch
+
 from lerobot.configs.policies import PreTrainedConfig
 from lerobot.policies.DeCAL import DeCALConfig, DeCALPolicy
 from lerobot.utils.constants import PRETRAINED_MODEL_DIR
 
-# Path to checkpoint: use .../checkpoints/STEP/pretrained_model (where config.json and model.safetensors live)
-checkpoint_value = os.environ.get("DECAL_CHECKPOINT")
-if not checkpoint_value:
-    raise RuntimeError("Set DECAL_CHECKPOINT to a DeCAL checkpoint step or pretrained_model directory")
-checkpoint_step_dir = Path(checkpoint_value).expanduser().resolve()
-ckpt_path = (checkpoint_step_dir / PRETRAINED_MODEL_DIR).resolve()
-if checkpoint_step_dir.name == PRETRAINED_MODEL_DIR:
-    ckpt_path = checkpoint_step_dir
-if not ckpt_path.is_dir():
-    raise FileNotFoundError(f"Checkpoint dir not found: {ckpt_path}")
+
+def _resolve_checkpoint(path: Path) -> Path:
+    checkpoint = path.expanduser().resolve()
+    model_dir = checkpoint / PRETRAINED_MODEL_DIR
+    if model_dir.is_dir():
+        checkpoint = model_dir
+    if not checkpoint.is_dir():
+        raise FileNotFoundError(f"Checkpoint directory not found: {checkpoint}")
+    return checkpoint
+
+
+ckpt_path = _resolve_checkpoint(eval_cfg.checkpoint)
 config = PreTrainedConfig.from_pretrained(ckpt_path)
 config.compile_model = False
 config.compile_mode = "reduce-overhead"
@@ -28,36 +53,31 @@ assert isinstance(config, DeCALConfig)
 policy = DeCALPolicy.from_pretrained(
     config=config, 
     pretrained_name_or_path=ckpt_path, 
+    local_files_only=True,
 )
 policy.cuda()
 policy.to(dtype)
 policy.eval()
 
-import os
 import numpy as np
 from lerobot.configs.train import TrainPipelineConfig
 from lerobot.datasets.factory import make_dataset
 from lerobot.datasets.utils import write_json, load_json, cast_stats_to_numpy
 from lerobot.transforms.core import UnNormalizeTransformFn
 from lerobot.utils.constants import OBS_IMAGES, OBS_STATE, ACTION, OBS_TACTILE_IMAGES
-from huggingface_hub import hf_hub_download
 
-os.environ["HF_HUB_OFFLINE"] = "1" 
-cfg = TrainPipelineConfig.from_pretrained(ckpt_path)
-cfg.dataset.repo_id = "unscrew_the_cap_gray"
+train_config_path = ckpt_path / "train_config.json"
+if not train_config_path.is_file():
+    raise FileNotFoundError(f"Training config not found: {train_config_path}")
+cfg = TrainPipelineConfig.from_pretrained(train_config_path)
 cfg.dataset.use_external_stats = True
 action_mode = cfg.dataset.action_mode
+print(f"Dataset from {train_config_path}: {cfg.dataset.repo_id}")
 dataset, _ = make_dataset(cfg)
 
-if Path(ckpt_path).is_dir():
-        stats_file = Path(ckpt_path) / "stats.json"
-        if not stats_file.exists():
-            raise FileNotFoundError(f"stats.json not found in {ckpt_path}")
-else:
-    stats_file = hf_hub_download(
-        repo_id=str(ckpt_path),
-        filename="stats.json",
-    )
+stats_file = ckpt_path / "stats.json"
+if not stats_file.exists():
+    raise FileNotFoundError(f"stats.json not found in {ckpt_path}")
 stats = cast_stats_to_numpy(load_json(stats_file)[dataset.meta.robot_type])
 dataset.meta.stats.update(stats)
 

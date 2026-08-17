@@ -58,7 +58,7 @@ class DeployConfig:
     robot_type: str | None = None
     host: str = "0.0.0.0"
     port: int = 8787
-    recon_dir: Path = Path("recon_images")
+    recon_dir: Path | None = None
 
 
 def _resolve_checkpoint(path: Path) -> Path:
@@ -178,8 +178,11 @@ class DeCALServer:
             norm_stats={OBS_STATE: _transform_stats(stats, OBS_STATE)},
         )
 
-        self.recon_dir = cfg.recon_dir.expanduser().resolve()
-        self.recon_dir.mkdir(parents=True, exist_ok=True)
+        self.recon_dir = (
+            cfg.recon_dir.expanduser().resolve() if cfg.recon_dir is not None else None
+        )
+        if self.recon_dir is not None:
+            self.recon_dir.mkdir(parents=True, exist_ok=True)
         self.request_index = 0
 
     @staticmethod
@@ -256,22 +259,23 @@ class DeCALServer:
             sample = self._build_sample(payload["observation"])
             inputs = self._to_model_inputs(sample)
 
-            save_image(
-                inputs["observation.images.image0"][0],
-                self.recon_dir / f"observation_{self.request_index}.png",
-            )
-            save_image(
-                inputs["observation.tactile_images.left_thumb_deform"][0],
-                self.recon_dir / f"tactile_left_thumb_{self.request_index}.png",
-            )
+            if self.recon_dir is not None:
+                save_image(
+                    inputs["observation.images.image0"][0],
+                    self.recon_dir / f"observation_{self.request_index}.png",
+                )
+                save_image(
+                    inputs["observation.tactile_images.left_thumb_deform"][0],
+                    self.recon_dir / f"tactile_left_thumb_{self.request_index}.png",
+                )
 
             with torch.inference_mode():
                 action_prediction, reconstructed_images, *_ = self.policy.predict_action_chunk(
-                    inputs, decode_image=True
+                    inputs, decode_image=self.recon_dir is not None
                 )
             action_prediction = action_prediction[0]
 
-            if reconstructed_images is not None:
+            if self.recon_dir is not None and reconstructed_images is not None:
                 save_image(
                     (reconstructed_images + 1) / 2,
                     self.recon_dir / f"reconstruction_{self.request_index}.png",
@@ -294,7 +298,7 @@ class DeCALServer:
 
     def run(self, host: str, port: int) -> None:
         app = FastAPI()
-        app.post("/act")(self.get_server_action)
+        app.post("/act", response_model=None)(self.get_server_action)
         uvicorn.run(app, host=host, port=port)
 
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="DeCAL logo" width="289">
+<img src="assets/logo.png" alt="DeCAL logo" width="200">
 
 # DeCAL: Towards Physically-Grounded Dexterous Vision-Language-Action Models via Contact-Aware Latent Co-Imagination
 
@@ -61,15 +61,6 @@ pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 \
 pip install -e .
 ```
 
-For deployment, evaluation, or development utilities, install the corresponding
-optional dependencies:
-
-```bash
-pip install -e ".[deploy]"
-pip install -e ".[eval]"
-pip install -e ".[dev]"
-```
-
 ### 5. Download the Pretrained Checkpoint
 
 Download the pretrained [InternVLA-A1-3B](https://huggingface.co/InternRobotics/InternVLA-A1-3B)
@@ -126,10 +117,6 @@ robot types require explicit state, action, tactile, camera, and image mappings;
 unsupported values fail immediately with `NotImplementedError`.
 
 ```bash
-export RAW_DATA_DIR=/path/to/raw/json/data
-export DATASET_REPO_ID=your_dataset_repo_id
-export LANGUAGE_INSTRUCTION="your task instruction"
-
 python src/lerobot/datasets/v30/convert_unitree_json_to_lerobot_v30.py \
   --raw_dir "${RAW_DATA_DIR}" \
   --repo_id "${DATASET_REPO_ID}" \
@@ -140,7 +127,7 @@ python src/lerobot/datasets/v30/convert_unitree_json_to_lerobot_v30.py \
 The converter stores the dataset under:
 
 ```text
-${HF_LEROBOT_HOME}/${DATASET_REPO_ID}
+${HF_LEROBOT_HOME}/{DATASET_REPO_ID}
 ```
 
 ### 2. Compute normalization statistics
@@ -156,7 +143,6 @@ This writes `stats.json` under
 `${HF_LEROBOT_HOME}/stats/abs/${DATASET_REPO_ID}/`.
 
 ### 3. Fine-tune DeCAL
-
 ```bash
 bash launch/decal_finetune.sh "${DATASET_REPO_ID}" abs true
 ```
@@ -168,7 +154,18 @@ Before running `launch/decal_finetune.sh`, configure the relevant environment va
 * CUDA / GPU-related environment variables
 * Paths to your local dataset and output directories
 
-<!-- ## 🌐 Pre-Training -->
+### 4. Evaluation & Inference
+Offline Evaluation
+```bash
+python tests/policies/decal/deploy_policy_tactile.py \
+  --checkpoint /path/to/checkpoint
+```
+
+Inference on Server
+```bash
+python tests/policies/decal/deploy_policy_tac_server.py \
+  --checkpoint /path/to/checkpoint
+```
 
 
 ## Citation

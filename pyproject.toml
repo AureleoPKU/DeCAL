@@ -53,7 +53,11 @@ dependencies = [
     "cmake>=3.29.0.1,<4.2.0",
     "einops>=0.8.0,<0.9.0",
     "fsspec>=2023.10.0",
+    "fastapi>=0.115.0,<1.0.0",
+    "json-numpy>=1.0.0,<2.0.0",
     "loguru>=0.7.0,<1.0.0",
+    "lpips>=0.1.4,<0.2.0",
+    "matplotlib>=3.8.0,<4.0.0",
     "mediapy>=1.2.0,<2.0.0",
     "numpy>=1.24.0,<3.0.0",
     "opencv-python-headless>=4.9.0,<4.13.0",
@@ -81,18 +85,6 @@ dependencies = [
     # Support dependencies
     "imageio[ffmpeg]>=2.34.0,<3.0.0",
     "termcolor>=2.4.0,<4.0.0",
-]
-
-[project.optional-dependencies]
-deploy = [
-    "fastapi>=0.115.0,<1.0.0",
-    "json-numpy>=1.0.0,<2.0.0",
+    "pytest>=8.0.0,<10.0.0",
     "uvicorn>=0.30.0,<1.0.0",
-]
-eval = [
-    "lpips>=0.1.4,<0.2.0",
-    "matplotlib>=3.8.0,<4.0.0",
-]
-dev = [
-    "pytest>=8.0.0,<9.0.0",
 ]
