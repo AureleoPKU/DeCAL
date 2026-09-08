@@ -7,7 +7,7 @@
 </div>
 
 [![Paper](https://img.shields.io/badge/Paper-arXiv-red.svg)](https://github.com/AureleoPKU/DeCAL)
-[![Data](https://img.shields.io/badge/Data-HuggingFace-blue?logo=huggingface)](https://github.com/AureleoPKU/DeCAL)
+[![Data](https://img.shields.io/badge/Data-ModelScope-blue)](https://www.modelscope.cn/datasets/Aureleo/DeCAL_dataset)
 [![Website](https://img.shields.io/badge/Website-Pages-blue.svg)](https://github.com/AureleoPKU/DeCAL)
 
 ## 🔥 Highlights
@@ -23,6 +23,7 @@
 
 ## 📑 Table of Contents
 - [Installation](#section-Installation)
+- [Dataset](#section-Data)
 - [Policy Training](#section-PolicyTraining)
 - [Evaluation & Inference](#section-Evaluation)
 
@@ -97,6 +98,14 @@ export HF_HOME=path_to_huggingface   # default: ~/.cache/huggingface
 export HF_LEROBOT_HOME=/path/to/lerobot/datasets  # default: $HF_HOME/lerobot
 export WANDB_API_KEY=your_wandb_api_key  # required by the training launch scripts
 ```
+
+---
+<span id="section-Data"></span>
+## 📦 Dataset
+
+The datasets used in our paper are available on [ModelScope](https://www.modelscope.cn/datasets/Aureleo/DeCAL_dataset).
+
+We thank the [Open-X-Tactile](https://open-x-tactile.github.io/) contributors for developing a unified ecosystem for cross-sensor and cross-platform tactile robot learning. All datasets have been processed into the unified OXT format.
 
 ---
 <span id="section-PolicyTraining"></span>
