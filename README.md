@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/AureleoPKU/DeCAL"><img src="https://img.shields.io/badge/Paper-arXiv-red.svg" alt="Paper"></a>
   <a href="https://www.modelscope.cn/datasets/Aureleo/DeCAL_dataset"><img src="https://img.shields.io/badge/Data-ModelScope-purple" alt="Data"></a>
-  <a href="https://github.com/AureleoPKU/DeCAL"><img src="https://img.shields.io/badge/Website-Pages-blue.svg" alt="Website"></a>
+  <a href="aureleopku.github.io/DeCAL/"><img src="https://img.shields.io/badge/Website-Pages-blue.svg" alt="Website"></a>
 </p>
 
 ## 🔥 Highlights
