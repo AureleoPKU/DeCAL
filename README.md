@@ -6,9 +6,11 @@
 
 </div>
 
-[![Paper](https://img.shields.io/badge/Paper-arXiv-red.svg)](https://github.com/AureleoPKU/DeCAL)
-[![Data](https://img.shields.io/badge/Data-ModelScope-blue)](https://www.modelscope.cn/datasets/Aureleo/DeCAL_dataset)
-[![Website](https://img.shields.io/badge/Website-Pages-blue.svg)](https://github.com/AureleoPKU/DeCAL)
+<p align="center">
+  <a href="https://github.com/AureleoPKU/DeCAL"><img src="https://img.shields.io/badge/Paper-arXiv-red.svg" alt="Paper"></a>
+  <a href="https://www.modelscope.cn/datasets/Aureleo/DeCAL_dataset"><img src="https://img.shields.io/badge/Data-ModelScope-purple" alt="Data"></a>
+  <a href="https://github.com/AureleoPKU/DeCAL"><img src="https://img.shields.io/badge/Website-Pages-blue.svg" alt="Website"></a>
+</p>
 
 ## 🔥 Highlights
 **DeCAL** is a physically grounded dexterous VLA model that unifies multimodal understanding, visuo-tactile imagination, and action generation within a collaborative framework. Equipped with rich multimodal inputs, DeCAL achieves strong performance across diverse contact-rich dexterous manipulation tasks and demonstrates robust generalization to unseen scenarios.
