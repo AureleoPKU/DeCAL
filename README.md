@@ -188,7 +188,7 @@ If you find our work useful, please consider citing us and give a star to our re
 ```BibTeX
 @article{fu2026decal,
   title={DeCAL: Towards Physically-Grounded Dexterous Vision-Language-Action Models via Contact-Aware Latent Co-Imagination},
-  author={Yankai Fu, Ning Chen, Junkai Zhao, Heng Zhang, Guocai Yao, Pengwei Wang, Zhongyuan Wang, Shanghang Zhang},
+  author={Fu, Yankai and Chen, Ning and Zhao, Junkai and Zhang, Heng and Yao, Guocai and Wang, Pengwei and Wang, Zhongyuan and Zhang, Shanghang},
   journal={arXiv preprint arXiv:2609.09119},
   year={2026}
 }
